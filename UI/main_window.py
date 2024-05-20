@@ -10,7 +10,7 @@ from PyQt5 import QtCore
 from qframelesswindow import FramelessMainWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 # 定义节点类，继承自QGraphicsItem
-
+import threading
 # 定义主窗口类，继承自QWidget
 class MainWindow(FramelessMainWindow,Ui_MainWindow):
     def __init__(self,graph):
@@ -43,6 +43,7 @@ class MainWindow(FramelessMainWindow,Ui_MainWindow):
         start = self.LineEdit.text()
         end = self.LineEdit_2.text()
         bridge = self.graph.query(start, end)
+        print(bridge)
         self.CaptionLabel_2.setText(bridge)
     def generateSentence(self):
         words = self.LineEdit_3.text()
@@ -51,10 +52,59 @@ class MainWindow(FramelessMainWindow,Ui_MainWindow):
     def calcShortestPath(self):
         start = self.LineEdit_4.text()
         end = self.LineEdit_5.text()
-        path = self.graph.calc_shortest_path(start, end)
-        pass
+        if(start == ''):
+            (distances,paths) = self.graph.shortest_path(end)
+            if isinstance(paths,str):
+                self.CaptionLabel_4.setText(paths)
+                return
+            s = ("到达所有节点的最短路径如下:\n")
+            for key in paths.keys():
+                if end!=key:
+                    s = s+key+':'+'->'.join(paths[key])+'\n'
+            self.CaptionLabel_4.setText(s)
+        elif(end == ''):
+            (distances,paths) = self.graph.shortest_path(start)
+            if isinstance(paths,str):
+                self.CaptionLabel_4.setText(paths)
+                return
+            s = ("到达所有节点的最短路径如下:\n")
+            for key in paths.keys():
+                if start!=key:
+                    s = s+key+':'+'->'.join(paths[key])+'\n'
+            self.CaptionLabel_4.setText(s)
+        else:
+            s = self.graph.shortest_path(start, end)
+            if isinstance(s,tuple):
+                self.CaptionLabel_4.setText(s[1])
+                return
+            self.CaptionLabel_4.setText(s)
+            self.graphImage.setStyleSheet(f"border-image: url('graph.png');")
+            
     def randomWalk(self):
-        pass
+        if self.PrimaryPushButton_3.isChecked():
+            self.PrimaryPushButton_3.setText('结束随机游走')
+            print('random walk on')
+            self.graph.stop = False
+            t1 = threading.Thread(target=self.graph.random_walk)
+            t2 = threading.Thread(target=self.setRandomWalk)
+            t1.start()
+            t2.start()
+        else:
+            self.PrimaryPushButton_3.setText('开始随机游走')
+            print('random walk off')
+            self.graph.stop = True
+
+    def setRandomWalk(self):
+        while True:
+            time.sleep(0.1)
+            if self.graph.done:
+                self.PrimaryPushButton_3.setChecked(False)
+                self.PrimaryPushButton_3.setText('开始随机游走')
+                with open('traversal_path.txt','r') as f:
+                    s = f.read()
+                self.CaptionLabel_3.setText(s)
+                return
+
 def qt_start(graph):
     # 创建应用对象
     QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
