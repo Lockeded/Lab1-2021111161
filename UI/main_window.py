@@ -79,6 +79,7 @@ class MainWindow(FramelessMainWindow,Ui_MainWindow):
                 return
             self.CaptionLabel_4.setText(s)
             self.graphImage.setStyleSheet(f"border-image: url('graph.png');")
+            print(s)
             
     def randomWalk(self):
         if self.PrimaryPushButton_3.isChecked():

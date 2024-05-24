@@ -1,5 +1,4 @@
 import re
-import networkx as nx
 import matplotlib.pyplot as plt
 import random
 import heapq
