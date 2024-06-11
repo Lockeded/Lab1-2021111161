@@ -85,6 +85,8 @@ class Graph():
         return False
 
     def query(self, start, end, generate=False):
+        if start is None or end is None:
+            return f'No "{start}" and "{end}" in the graph!'
         start = start.lower()
         end = end.lower()
         start_node = self.nodes.get(start)
@@ -98,26 +100,22 @@ class Graph():
                     path.append(neighbor.text)
             return path
         if not start_node and not end_node:
-            print(f'No \"{start}\" and \"{end}\" in the graph!')
-            return f'No \"{start}\" and \"{end}\" in the graph!'
+            return f'No "{start}" and "{end}" in the graph!'
         if not start_node:
-            print(f'No \"{start}\" in the graph!')
-            return f'No \"{start}\" in the graph!'
+            return f'No "{start}" in the graph!'
         if not end_node:
-            print(f'No \"{end}\" in the graph!')
-            return f'No \"{end}\" in the graph!'
+            return f'No "{end}" in the graph!'
         for neighbor in start_node.neighbors:
             if end_node in neighbor.neighbors:
                 path.append(neighbor.text)
         if path:
-            print(f'The bridge words from \"{start}\" to \"{end}\" are:', ' -> '.join(path))
             if len(path) == 1:
-                return f'The bridge words from \"{start}\" to \"{end}\" is:' + path[0]
+                return f'The bridge words from "{start}" to "{end}" is: ' + path[0]
             else:
-                return (f'The bridge words from \"{start}\" to \"{end}\" are:' + ','.join(path[:-1]) + ' and ' + path[-1])
+                return f'The bridge words from "{start}" to "{end}" are: ' + ', '.join(path[:-1]) + ' and ' + path[-1]
         else:
-            print(f'No bridge words from \"{start}\" to \"{end}\"!')
-            return f'No bridge words from \"{start}\" to \"{end}\"!'
+            return f'No bridge words from "{start}" to "{end}"!'
+
 
     def generate_sentence(self, s):
         if(s == ' ' or s == ''):
@@ -303,4 +301,4 @@ def randomWalk():
 
 
 graph = Graph()
-qt_start(graph)
+# qt_start(graph)
