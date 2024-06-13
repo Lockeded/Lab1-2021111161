@@ -62,7 +62,6 @@ class Graph():
         start_node = self.nodes.get(start)
         end_node = self.nodes.get(end)
         if not start_node or not end_node:
-            print(f'No \"{start}\" or \"{end}\" in the graph!')
             return False
         queue = []  # 创建一个队列
         # 邻居都加入到这个搜索队列中
@@ -79,9 +78,7 @@ class Graph():
                 for neighbor in head_node.neighbors:
                     queue.append(neighbor.text)
         if start == end:
-            print("The same end with start!")
             return False
-        print("Unreachable!")
         return False
 
     def query(self, start, end, generate=False):
@@ -215,7 +212,10 @@ class Graph():
         return distances, paths
 
 
-    def shortest_path(self, *args):
+
+
+
+    def shortest_path(self, args):
         if len(args) > 1:
             start = str(args[0])
             end = str(args[1])
@@ -278,6 +278,14 @@ class Graph():
         print("Traversal path has been written to traversal_path.txt")
         self.done = True
         return "Done"
+    
+    def calcShortestPath(self,word1,word2):
+        args = []
+        if word1 != None:
+            args.append(word1)
+        if word2 != None:
+            args.append(word2)
+        return self.shortest_path(args)
 
 
 def showDirectedGraph():
@@ -291,10 +299,8 @@ def queryBridgeWords(word1, word2):
 def generateNewText(s):
     return graph.generate_sentence(s)
 
-
-def calcShortestPath(*args):
-    return graph.shortest_path(*args)
-
+def calcShortestPath(word1, word2):
+    return graph.calcShortestPath(word1, word2)
 
 def randomWalk():
     graph.random_walk()
